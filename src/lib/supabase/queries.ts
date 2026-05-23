@@ -71,7 +71,7 @@ export async function getSubjectDetails({
 }): Promise<Subject | null> {
     const supabase = await createClient();
 
-    const subjectName = subject
+    const subjectName = decodeURIComponent(subject)
         .split("-")
         .join(" ")
         .replace(/\b\w/g, (l) => l.toUpperCase());

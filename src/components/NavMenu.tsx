@@ -44,6 +44,14 @@ const NavMenu = () => {
                 </Button>
                 <NavigationMenuItem>
                     <NavigationMenuLink
+                        href="/result"
+                        className={navigationMenuTriggerStyle()}
+                    >
+                        Results
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <NavigationMenuLink
                         href="/changelog"
                         className={navigationMenuTriggerStyle()}
                     >

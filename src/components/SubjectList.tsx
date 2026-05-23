@@ -59,11 +59,11 @@ const SubjectList = ({ course, list }: SubjectListProps) => {
                                             <span className="">
                                                 {course === Courses.BTECH &&
                                                     (params.slug[2]
-                                                        ? params.slug[2]
+                                                        ? decodeURIComponent(params.slug[2])
                                                         : "Select Subject")}
                                                 {course === Courses.BCA &&
                                                     (params.slug[1]
-                                                        ? params.slug[1]
+                                                        ? decodeURIComponent(params.slug[1])
                                                         : "Select Subject")}
                                             </span>
                                         </div>
