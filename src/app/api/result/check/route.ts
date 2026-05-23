@@ -373,12 +373,28 @@ export async function POST(req: NextRequest) {
         }
 
         if (titleMatch?.[1]?.trim() === "Message") {
-            // Log first 2 KB of the message page to help diagnose
-            console.log("[check] Message page body (first 2000 chars):", html.slice(0, 2000));
+            // Extract the human-readable message from the portal's error page
+            const $msg = cheerio.load(html);
+            const portalMsg =
+                $msg("td.errormsg, .errormsg, .error-msg, td[class*='error'], td[class*='message']")
+                    .first()
+                    .text()
+                    .trim() ||
+                $msg("table td")
+                    .toArray()
+                    .map((el) => $msg(el).text().trim())
+                    .filter((t) => t.length > 10 && t.length < 300)
+                    .find((t) =>
+                        /invalid|expired|wrong|captcha|session|password|username|incorrect/i.test(t)
+                    ) ||
+                "";
+            console.log("[check] Message page portal text:", portalMsg || "(none extracted)");
+            console.log("[check] Message page body:", html.slice(0, 3000));
             return NextResponse.json(
                 {
-                    error:
-                        "GGSIPU portal rejected the login. The captcha may have expired — please refresh and submit quickly. If it keeps failing, try again in a few minutes.",
+                    error: portalMsg
+                        ? `GGSIPU says: "${portalMsg}"`
+                        : "GGSIPU portal rejected the login — please refresh the captcha and try again.",
                 },
                 { status: 401 }
             );
