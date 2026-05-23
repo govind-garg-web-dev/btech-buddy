@@ -258,29 +258,67 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const result = parseResultHtml(html);
+        const cookieHeader = Array.from(updatedCookies.entries())
+            .map(([k, v]) => `${k}=${v}`)
+            .join("; ");
 
-        // If no result tables found, the login may have worked but result page is different
+        const ua = commonHeaders["User-Agent"];
+
+        // Helper: fetch a page with current cookie jar
+        const authedFetch = (url: string) =>
+            fetch(url, { headers: { Cookie: cookieHeader, "User-Agent": ua } });
+
+        // Parse whatever page we landed on after login
+        let result = parseResultHtml(html);
+
+        // If still empty, try the canonical student home page
         if (result.semesters.length === 0) {
-            // Try fetching the student home page explicitly
-            const cookieHeader = Array.from(updatedCookies.entries())
-                .map(([k, v]) => `${k}=${v}`)
-                .join("; ");
-
-            const homeRes = await fetch(
-                `${GGSIPU_BASE}/web/student/studenthome.jsp`,
-                {
-                    headers: {
-                        Cookie: cookieHeader,
-                        "User-Agent": commonHeaders["User-Agent"],
-                    },
-                }
-            );
-
+            const homeRes = await authedFetch(`${GGSIPU_BASE}/web/student/studenthome.jsp`);
             if (homeRes.ok) {
                 const homeHtml = await homeRes.text();
-                const homeResult = parseResultHtml(homeHtml);
-                return NextResponse.json(homeResult);
+                result = parseResultHtml(homeHtml);
+
+                // Scan home page for links to result sub-pages and follow each
+                if (result.semesters.length === 0) {
+                    const $home = cheerio.load(homeHtml);
+                    const resultLinks: string[] = [];
+
+                    $home("a[href]").each((_, el) => {
+                        const href = $home(el).attr("href") ?? "";
+                        if (
+                            href.toLowerCase().includes("result") ||
+                            href.toLowerCase().includes("marks") ||
+                            href.toLowerCase().includes("grade")
+                        ) {
+                            const abs = href.startsWith("http")
+                                ? href
+                                : `${GGSIPU_BASE}${href.startsWith("/") ? "" : "/web/student/"}${href}`;
+                            resultLinks.push(abs);
+                        }
+                    });
+
+                    for (const link of resultLinks.slice(0, 5)) {
+                        try {
+                            const linkRes = await authedFetch(link);
+                            if (!linkRes.ok) continue;
+                            const linkHtml = await linkRes.text();
+                            const linkResult = parseResultHtml(linkHtml);
+                            if (linkResult.semesters.length > 0) {
+                                result = linkResult;
+                                break;
+                            }
+                        } catch { /* ignore */ }
+                    }
+
+                    // Still nothing – return debug snippet so layout can be inspected
+                    if (result.semesters.length === 0) {
+                        const snippet = homeHtml.slice(0, 8000);
+                        return NextResponse.json({
+                            ...result,
+                            _debug: snippet,
+                        });
+                    }
+                }
             }
         }
 

@@ -100,6 +100,9 @@ export default function ResultPage() {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Failed to fetch result");
+            if (data._debug) {
+                console.log("[IPU Result Debug HTML]\n", data._debug);
+            }
             setResult(data as ResultData);
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Something went wrong";
