@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+// redirect is used in the AdminLogout server action below
 import { BookOpen, FileText, LayoutDashboard, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -28,8 +29,10 @@ export default async function AdminLayout({
         data: { user },
     } = await supabase.auth.getUser();
 
+    // Not logged in — middleware handles redirect for protected routes.
+    // For /admin/login itself, just render the page with no sidebar.
     if (!user) {
-        redirect("/admin/login");
+        return <>{children}</>;
     }
 
     return (
