@@ -189,12 +189,15 @@ function parseResultHtml(html: string): ResultData {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { enrollment, password, captchaText, sessionId } = body as {
-            enrollment: string;
-            password: string;
-            captchaText: string;
-            sessionId: string;
-        };
+        const { enrollment, password, captchaText, sessionId, formAction, inputFields } =
+            body as {
+                enrollment: string;
+                password: string;
+                captchaText: string;
+                sessionId: string;
+                formAction?: string | null;
+                inputFields?: Record<string, string>;
+            };
 
         if (!enrollment || !password || !captchaText || !sessionId) {
             return NextResponse.json(
@@ -213,16 +216,43 @@ export async function POST(req: NextRequest) {
             Origin: GGSIPU_BASE,
         };
 
-        // POST to GGSIPU login
-        const formBody = new URLSearchParams({
-            j_username: enrollment.trim(),
-            j_password: password,
-            captchaText: captchaText.trim(),
-        }).toString();
+        // Resolve the actual login POST URL from the form action (discovered at captcha time)
+        let loginUrl = `${GGSIPU_BASE}/web/j_security_check`; // fallback
+        if (formAction) {
+            loginUrl = formAction.startsWith("http")
+                ? formAction
+                : `${GGSIPU_BASE}${formAction.startsWith("/") ? "" : "/web/"}${formAction}`;
+        }
+
+        // Build the form body using actual field names from the login page
+        // Common patterns: j_username/j_password, username/password, enrollno/password
+        const usernameField =
+            inputFields &&
+            Object.keys(inputFields).find((k) =>
+                /user|enroll|login|id|uname/i.test(k)
+            );
+        const passwordField =
+            inputFields &&
+            Object.keys(inputFields).find((k) => /pass|pwd|pw\b/i.test(k));
+        const captchaField =
+            inputFields &&
+            Object.keys(inputFields).find((k) => /captcha|verif|code/i.test(k));
+
+        const formParams: Record<string, string> = {
+            ...(inputFields ?? {}), // include any hidden fields
+            [usernameField ?? "j_username"]: enrollment.trim(),
+            [passwordField ?? "j_password"]: password,
+            [captchaField ?? "captchaText"]: captchaText.trim(),
+        };
+
+        console.log("[check] loginUrl:", loginUrl);
+        console.log("[check] formParams keys:", Object.keys(formParams));
+
+        const formBody = new URLSearchParams(formParams).toString();
 
         const { res: loginRes, cookies: updatedCookies } =
             await followRedirects(
-                `${GGSIPU_BASE}/web/j_security_check`,
+                loginUrl,
                 {
                     method: "POST",
                     headers: commonHeaders,

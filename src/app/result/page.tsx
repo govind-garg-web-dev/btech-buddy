@@ -61,6 +61,8 @@ export default function ResultPage() {
     const [captchaText, setCaptchaText] = useState("");
     const [captchaImage, setCaptchaImage] = useState<string | null>(null);
     const [sessionId, setSessionId] = useState<string | null>(null);
+    const [formAction, setFormAction] = useState<string | null>(null);
+    const [inputFields, setInputFields] = useState<Record<string, string>>({});
     const [loadingCaptcha, setLoadingCaptcha] = useState(false);
     const [checking, setChecking] = useState(false);
     const [result, setResult] = useState<ResultData | null>(null);
@@ -76,6 +78,9 @@ export default function ResultPage() {
             if (!res.ok) throw new Error(data.error ?? "Failed to load captcha");
             setCaptchaImage(data.captcha);
             setSessionId(data.sessionId);
+            setFormAction(data.formAction ?? null);
+            setInputFields(data.inputFields ?? {});
+            console.log("[captcha] formAction:", data.formAction, "fields:", data.inputFields);
         } catch (e) {
             toast.error(e instanceof Error ? e.message : "Could not reach IPU portal");
         } finally {
@@ -96,7 +101,7 @@ export default function ResultPage() {
             const res = await fetch("/api/result/check", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ enrollment, password, captchaText, sessionId }),
+                body: JSON.stringify({ enrollment, password, captchaText, sessionId, formAction, inputFields }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Failed to fetch result");

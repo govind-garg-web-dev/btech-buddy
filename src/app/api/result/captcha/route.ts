@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
+import * as cheerio from "cheerio";
 
 const GGSIPU_BASE = "https://examweb.ggsipu.ac.in";
 
+const UA =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+
 export async function GET() {
     try {
-        // Establish a session by hitting the login page first
+        // Fetch login page — this establishes the session AND reveals the real form action
         const loginRes = await fetch(`${GGSIPU_BASE}/web/login.jsp`, {
             headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "User-Agent": UA,
                 Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             },
             redirect: "follow",
@@ -25,12 +28,27 @@ export async function GET() {
             );
         }
 
+        // Parse the real form action URL from the login page HTML
+        const loginHtml = await loginRes.text();
+        const $ = cheerio.load(loginHtml);
+        const rawAction = $("form").first().attr("action") ?? "";
+        const formAction = rawAction.startsWith("http")
+            ? rawAction
+            : `${GGSIPU_BASE}${rawAction.startsWith("/") ? "" : "/web/"}${rawAction}`;
+
+        // Also collect all input field names so we know what to send
+        const inputFields: Record<string, string> = {};
+        $("form input[name]").each((_, el) => {
+            const name = $(el).attr("name") ?? "";
+            const value = $(el).attr("value") ?? "";
+            if (name) inputFields[name] = value;
+        });
+
         // Fetch the captcha image for this session
         const captchaRes = await fetch(`${GGSIPU_BASE}/web/CaptchaServlet`, {
             headers: {
                 Cookie: `JSESSIONID=${sessionId}`,
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "User-Agent": UA,
                 Referer: `${GGSIPU_BASE}/web/login.jsp`,
             },
         });
@@ -44,12 +62,16 @@ export async function GET() {
 
         const buffer = await captchaRes.arrayBuffer();
         const base64 = Buffer.from(buffer).toString("base64");
-        const contentType =
-            captchaRes.headers.get("content-type") ?? "image/jpeg";
+        const contentType = captchaRes.headers.get("content-type") ?? "image/jpeg";
+
+        console.log("[captcha] formAction:", formAction);
+        console.log("[captcha] inputFields:", inputFields);
 
         return NextResponse.json({
             captcha: `data:${contentType};base64,${base64}`,
             sessionId,
+            formAction: rawAction || null, // send back raw so check route can build absolute URL
+            inputFields,
         });
     } catch (err) {
         console.error("[captcha] error:", err);
