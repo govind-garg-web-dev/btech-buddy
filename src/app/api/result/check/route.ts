@@ -67,6 +67,8 @@ async function followRedirects(
             }
         }
 
+        console.log(`[redirect #${redirects}] ${options.method ?? "GET"} ${currentUrl} → ${res.status} Location: ${res.headers.get("location") ?? "(none)"} Cookies: ${res.headers.get("set-cookie") ?? "(none)"}`);
+
         if (
             res.status === 301 ||
             res.status === 302 ||
@@ -263,6 +265,11 @@ export async function POST(req: NextRequest) {
         }
 
         const html = await loginRes.text();
+
+        // Log page title so we know where we landed
+        const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+        console.log("[check] final page title:", titleMatch?.[1], "| status:", loginRes.status, "| url:", loginRes.url);
+        console.log("[check] cookies after login:", Array.from(updatedCookies.entries()).map(([k]) => k).join(", "));
 
         // Check for login failure messages in the page
         if (
