@@ -236,6 +236,7 @@ export async function POST(req: NextRequest) {
         };
 
         console.log("[check] loginUrl:", loginUrl);
+        console.log("[check] sessionId prefix:", sessionId?.slice(0, 8));
         console.log("[check] formParams keys:", Object.keys(formParams));
 
         const formBody = new URLSearchParams(formParams).toString();

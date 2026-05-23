@@ -64,13 +64,20 @@ export async function GET() {
         const base64 = Buffer.from(buffer).toString("base64");
         const contentType = captchaRes.headers.get("content-type") ?? "image/jpeg";
 
+        // CaptchaServlet may rotate the session — always use the latest JSESSIONID
+        const captchaCookie = captchaRes.headers.get("set-cookie") ?? "";
+        const refreshedSessionId =
+            captchaCookie.match(/JSESSIONID=([^;]+)/)?.[1] ?? sessionId;
+
+        console.log("[captcha] login.jsp sessionId:", sessionId?.slice(0, 8));
+        console.log("[captcha] CaptchaServlet sessionId:", refreshedSessionId?.slice(0, 8), "(same?", sessionId === refreshedSessionId, ")");
         console.log("[captcha] formAction:", formAction);
         console.log("[captcha] inputFields:", inputFields);
 
         return NextResponse.json({
             captcha: `data:${contentType};base64,${base64}`,
-            sessionId,
-            formAction: rawAction || null, // send back raw so check route can build absolute URL
+            sessionId: refreshedSessionId, // use the LATEST session (CaptchaServlet may have rotated it)
+            formAction: rawAction || null,
             inputFields,
         });
     } catch (err) {
