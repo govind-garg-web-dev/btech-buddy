@@ -216,33 +216,21 @@ export async function POST(req: NextRequest) {
             Origin: GGSIPU_BASE,
         };
 
-        // Resolve the actual login POST URL from the form action (discovered at captcha time)
-        let loginUrl = `${GGSIPU_BASE}/web/j_security_check`; // fallback
+        // Resolve the actual login POST URL
+        // formAction is "Login" (relative) → /web/Login
+        let loginUrl = `${GGSIPU_BASE}/web/Login`; // confirmed from form inspection
         if (formAction) {
             loginUrl = formAction.startsWith("http")
                 ? formAction
                 : `${GGSIPU_BASE}${formAction.startsWith("/") ? "" : "/web/"}${formAction}`;
         }
 
-        // Build the form body using actual field names from the login page
-        // Common patterns: j_username/j_password, username/password, enrollno/password
-        const usernameField =
-            inputFields &&
-            Object.keys(inputFields).find((k) =>
-                /user|enroll|login|id|uname/i.test(k)
-            );
-        const passwordField =
-            inputFields &&
-            Object.keys(inputFields).find((k) => /pass|pwd|pw\b/i.test(k));
-        const captchaField =
-            inputFields &&
-            Object.keys(inputFields).find((k) => /captcha|verif|code/i.test(k));
-
+        // Confirmed field names from GGSIPU login form: username, passwd, captcha
         const formParams: Record<string, string> = {
-            ...(inputFields ?? {}), // include any hidden fields
-            [usernameField ?? "j_username"]: enrollment.trim(),
-            [passwordField ?? "j_password"]: password,
-            [captchaField ?? "captchaText"]: captchaText.trim(),
+            ...(inputFields ?? {}), // include any hidden fields verbatim
+            username: enrollment.trim(),
+            passwd: password,
+            captcha: captchaText.trim(),
         };
 
         console.log("[check] loginUrl:", loginUrl);
