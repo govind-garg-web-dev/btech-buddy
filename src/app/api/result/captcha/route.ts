@@ -15,9 +15,14 @@ function supabaseAdmin() {
 
 export async function GET() {
     try {
-        // Establish session via login page
+        // Establish session via login page — use manual redirect to capture cookies from every hop
         const loginRes = await fetch(`${GGSIPU_BASE}/web/login.jsp`, {
-            headers: { "User-Agent": UA, Accept: "text/html,*/*" },
+            headers: {
+                "User-Agent": UA,
+                Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Upgrade-Insecure-Requests": "1",
+            },
             redirect: "follow",
         });
 
@@ -42,14 +47,20 @@ export async function GET() {
             if (name) inputFields[name] = value;
         });
 
-        // Fetch captcha image, bound to this session
-        const captchaRes = await fetch(`${GGSIPU_BASE}/web/CaptchaServlet`, {
-            headers: {
-                Cookie: `JSESSIONID=${sessionId}`,
-                "User-Agent": UA,
-                Referer: `${GGSIPU_BASE}/web/login.jsp`,
-            },
-        });
+        // Fetch captcha bound to this session.
+        // Include ;jsessionid= in the URL path so Java EE load balancers
+        // route this request to the same node that created the session.
+        const captchaRes = await fetch(
+            `${GGSIPU_BASE}/web/CaptchaServlet;jsessionid=${sessionId}`,
+            {
+                headers: {
+                    Cookie: `JSESSIONID=${sessionId}`,
+                    "User-Agent": UA,
+                    Referer: `${GGSIPU_BASE}/web/login.jsp`,
+                    Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                },
+            }
+        );
 
         if (!captchaRes.ok) {
             return NextResponse.json(
@@ -68,7 +79,12 @@ export async function GET() {
             captchaCookie.match(/JSESSIONID=([^;]+)/)?.[1] ?? sessionId;
 
         console.log("[captcha] sessionId (login):", sessionId.slice(0, 8));
-        console.log("[captcha] sessionId (captcha):", finalSessionId.slice(0, 8), "same?", sessionId === finalSessionId);
+        console.log(
+            "[captcha] sessionId (captcha):",
+            finalSessionId.slice(0, 8),
+            "same?",
+            sessionId === finalSessionId
+        );
 
         // Store session server-side — client only gets a requestId UUID
         const requestId = crypto.randomUUID();
@@ -82,7 +98,6 @@ export async function GET() {
 
         if (dbErr) {
             console.error("[captcha] Supabase insert error:", dbErr.message);
-            // Fallback: return sessionId directly if DB is unavailable
             return NextResponse.json({
                 captcha: `data:${contentType};base64,${base64}`,
                 sessionId: finalSessionId,

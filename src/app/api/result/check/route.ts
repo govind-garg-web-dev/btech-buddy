@@ -216,6 +216,15 @@ function parseResultHtml(html: string): ResultData {
     return { name, enrollment, programme, semesters };
 }
 
+/** Append ;jsessionid=<id> to a URL path before any query string */
+function withSessionPath(url: string, sessionId: string): string {
+    if (url.includes(";jsessionid=")) return url;
+    const qIdx = url.indexOf("?");
+    return qIdx >= 0
+        ? url.slice(0, qIdx) + `;jsessionid=${sessionId}` + url.slice(qIdx)
+        : `${url};jsessionid=${sessionId}`;
+}
+
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
@@ -223,9 +232,7 @@ export async function POST(req: NextRequest) {
             enrollment,
             password,
             captchaText,
-            // New: requestId from Supabase-backed session
             requestId,
-            // Legacy fallback: sessionId passed directly
             sessionId: sessionIdDirect,
             formAction: formActionDirect,
             inputFields: inputFieldsDirect,
@@ -251,7 +258,6 @@ export async function POST(req: NextRequest) {
         let inputFields: Record<string, string> = {};
 
         if (requestId) {
-            // Retrieve session from Supabase
             const supabase = supabaseAdmin();
             const { data, error } = await supabase
                 .from("result_sessions")
@@ -269,7 +275,6 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            // Delete immediately (one-time use)
             await supabase
                 .from("result_sessions")
                 .delete()
@@ -281,7 +286,6 @@ export async function POST(req: NextRequest) {
 
             console.log("[check] sessionId from Supabase:", sessionId.slice(0, 8));
         } else if (sessionIdDirect) {
-            // Fallback path (DB unavailable at captcha time)
             sessionId = sessionIdDirect;
             formAction = formActionDirect ?? null;
             inputFields = inputFieldsDirect ?? {};
@@ -295,12 +299,22 @@ export async function POST(req: NextRequest) {
 
         const cookies = new Map<string, string>([["JSESSIONID", sessionId]]);
 
+        // Full browser-like headers to avoid bot detection / server policy blocks
         const commonHeaders = {
             "User-Agent":
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept":
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Cache-Control": "max-age=0",
             "Content-Type": "application/x-www-form-urlencoded",
-            Referer: `${GGSIPU_BASE}/web/login.jsp`,
-            Origin: GGSIPU_BASE,
+            "Origin": GGSIPU_BASE,
+            "Referer": `${GGSIPU_BASE}/web/login.jsp`,
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-User": "?1",
         };
 
         // Resolve login URL from stored form action
@@ -310,6 +324,10 @@ export async function POST(req: NextRequest) {
                 ? formAction
                 : `${GGSIPU_BASE}${formAction.startsWith("/") ? "" : "/web/"}${formAction}`;
         }
+
+        // Embed jsessionid in URL path — Java EE load balancers use this for
+        // sticky routing so every request lands on the node that owns the session.
+        loginUrl = withSessionPath(loginUrl, sessionId);
 
         const formParams: Record<string, string> = {
             ...inputFields,
@@ -354,12 +372,13 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // If we got the "Message" / session-expired page, report it clearly
         if (titleMatch?.[1]?.trim() === "Message") {
+            // Log first 2 KB of the message page to help diagnose
+            console.log("[check] Message page body (first 2000 chars):", html.slice(0, 2000));
             return NextResponse.json(
                 {
                     error:
-                        "GGSIPU portal returned a session error. This can happen if the captcha expired — please refresh and try again quickly.",
+                        "GGSIPU portal rejected the login. The captcha may have expired — please refresh and submit quickly. If it keeps failing, try again in a few minutes.",
                 },
                 { status: 401 }
             );
