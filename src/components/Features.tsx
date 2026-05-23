@@ -2,80 +2,93 @@ import LayoutWrapper from "@/layouts/LayoutWrapper";
 import {
     BookCheck,
     CalendarCheck,
-    MessageSquarePlus,
-    PackageOpen,
+    FileText,
+    FlaskConical,
     Repeat,
     TabletSmartphone,
 } from "lucide-react";
-import ShowCard from "./ui/show-card";
+import { FC, ReactNode } from "react";
+
+interface FeatureCardProps {
+    icon: ReactNode;
+    title: string;
+    description: string;
+}
+
+const FeatureCard: FC<FeatureCardProps> = ({ icon, title, description }) => (
+    <div className="flex flex-col gap-4 rounded-xl border bg-card p-5 shadow-sm transition-colors hover:bg-accent/40">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            {icon}
+        </div>
+        <div className="flex flex-col gap-1.5">
+            <p className="font-semibold">{title}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+                {description}
+            </p>
+        </div>
+    </div>
+);
+
+const featureList: FeatureCardProps[] = [
+    {
+        icon: <CalendarCheck className="h-5 w-5" />,
+        title: "Always Up-to-Date",
+        description:
+            "Syllabus and materials stay current with GGSIPU's latest curriculum changes.",
+    },
+    {
+        icon: <BookCheck className="h-5 w-5" />,
+        title: "Full Curriculum Coverage",
+        description:
+            "Every subject, every unit — from 1st semester to final year, for all branches.",
+    },
+    {
+        icon: <FileText className="h-5 w-5" />,
+        title: "Notes & PYQs",
+        description:
+            "Handwritten notes and previous year question papers organized by subject.",
+    },
+    {
+        icon: <FlaskConical className="h-5 w-5" />,
+        title: "Lab Files",
+        description:
+            "Practical experiment files and lab manuals for every practical subject.",
+    },
+    {
+        icon: <TabletSmartphone className="h-5 w-5" />,
+        title: "Works on Any Device",
+        description:
+            "Fully responsive — use it on your phone, tablet, or laptop with ease.",
+    },
+    {
+        icon: <Repeat className="h-5 w-5" />,
+        title: "Constantly Growing",
+        description:
+            "New materials added regularly. Your feedback directly shapes what comes next.",
+    },
+];
 
 const Features = () => {
     return (
-        <div className="w-full">
-            <LayoutWrapper className="z-10 py-20">
-                <div className="flex flex-col items-center gap-10">
-                    <div className="prose prose-neutral text-center dark:prose-invert">
-                        <h2 className="text-xl font-semibold text-accent-foreground md:text-3xl">
-                            We&apos;ve got your back
+        <div className="w-full border-b">
+            <LayoutWrapper className="py-20">
+                <div className="flex flex-col gap-12">
+                    <div className="flex flex-col gap-3">
+                        <p className="text-sm font-semibold uppercase tracking-widest text-highlight">
+                            Features
+                        </p>
+                        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                            Everything you need to ace your semester
                         </h2>
+                        <p className="max-w-2xl text-muted-foreground">
+                            Built specifically for GGSIPU students — all
+                            materials organized and ready when you need them.
+                        </p>
                     </div>
-                    <div className="grid grid-cols-1 items-center justify-center gap-x-16 gap-y-5 sm:grid-cols-2 sm:gap-y-10 lg:grid-cols-3">
-                        <ShowCard
-                            title="Up-to-Date Information"
-                            iconRight={<CalendarCheck className="h-4 w-4" />}
-                        >
-                            Current, Never Outdated Information.
-                        </ShowCard>
-                        <div className="block lg:hidden">
-                            <ShowCard
-                                title="Comprehensive Coverage"
-                                iconLeft={<BookCheck className="h-4 w-4" />}
-                            >
-                                Inclusive grasp of entire curriculum.
-                            </ShowCard>
-                        </div>
-                        <div className="hidden lg:block">
-                            <ShowCard
-                                title="Comprehensive Coverage"
-                                iconRight={<BookCheck className="h-4 w-4" />}
-                            >
-                                Inclusive grasp of entire curriculum.
-                            </ShowCard>
-                        </div>
-                        <ShowCard
-                            title="User Friendly Interface"
-                            iconRight={<TabletSmartphone className="h-4 w-4" />}
-                        >
-                            Intuitive. Navigational Bliss.
-                        </ShowCard>
-                        <ShowCard
-                            title="Open Source"
-                            iconLeft={<PackageOpen className="h-4 w-4" />}
-                        >
-                            Knowledge for All, Code Together.
-                        </ShowCard>
-                        <div className="block lg:hidden">
-                            <ShowCard
-                                title="Constant Updates"
-                                iconRight={<Repeat className="h-4 w-4" />}
-                            >
-                                Always Improving, Never Stagnant.
-                            </ShowCard>
-                        </div>
-                        <div className="hidden lg:block">
-                            <ShowCard
-                                title="Constant Updates"
-                                iconLeft={<Repeat className="h-4 w-4" />}
-                            >
-                                Always Improving, Never Stagnant.
-                            </ShowCard>
-                        </div>
-                        <ShowCard
-                            title="Feedback Loop"
-                            iconLeft={<MessageSquarePlus className="h-4 w-4" />}
-                        >
-                            Your Input Shapes BtechBuddy.
-                        </ShowCard>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {featureList.map((f) => (
+                            <FeatureCard key={f.title} {...f} />
+                        ))}
                     </div>
                 </div>
             </LayoutWrapper>
