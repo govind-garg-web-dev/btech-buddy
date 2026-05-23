@@ -60,6 +60,8 @@ export default function ResultPage() {
     const [password, setPassword] = useState("");
     const [captchaText, setCaptchaText] = useState("");
     const [captchaImage, setCaptchaImage] = useState<string | null>(null);
+    const [requestId, setRequestId] = useState<string | null>(null);
+    // Fallback fields used when Supabase is unavailable
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [formAction, setFormAction] = useState<string | null>(null);
     const [inputFields, setInputFields] = useState<Record<string, string>>({});
@@ -77,10 +79,17 @@ export default function ResultPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Failed to load captcha");
             setCaptchaImage(data.captcha);
-            setSessionId(data.sessionId);
-            setFormAction(data.formAction ?? null);
-            setInputFields(data.inputFields ?? {});
-            console.log("[captcha] formAction:", data.formAction, "fields:", data.inputFields);
+            // Supabase-backed: server stores session, returns just a UUID
+            if (data.requestId) {
+                setRequestId(data.requestId);
+                setSessionId(null);
+            } else {
+                // Fallback (DB unavailable)
+                setRequestId(null);
+                setSessionId(data.sessionId ?? null);
+                setFormAction(data.formAction ?? null);
+                setInputFields(data.inputFields ?? {});
+            }
         } catch (e) {
             toast.error(e instanceof Error ? e.message : "Could not reach IPU portal");
         } finally {
@@ -90,7 +99,7 @@ export default function ResultPage() {
 
     const handleCheck = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!sessionId) {
+        if (!requestId && !sessionId) {
             toast.error("Please load the captcha first.");
             return;
         }
@@ -101,7 +110,10 @@ export default function ResultPage() {
             const res = await fetch("/api/result/check", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ enrollment, password, captchaText, sessionId, formAction, inputFields }),
+                body: JSON.stringify({
+                    enrollment, password, captchaText,
+                    ...(requestId ? { requestId } : { sessionId, formAction, inputFields }),
+                }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error ?? "Failed to fetch result");
