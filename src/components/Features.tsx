@@ -74,7 +74,7 @@ const Features = () => {
                             title="Feedback Loop"
                             iconLeft={<MessageSquarePlus className="h-4 w-4" />}
                         >
-                            Your Input Shapes SyllabusX.
+                            Your Input Shapes BtechBuddy.
                         </ShowCard>
                     </div>
                 </div>

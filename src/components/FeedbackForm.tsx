@@ -169,10 +169,9 @@ const FeedbackForm = ({}) => {
                                     <FormLabel>Query</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            minRows={2}
-                                            maxRows={5}
                                             {...field}
                                             placeholder="Very bad project 2/10 should not exist"
+                                            rows={3}
                                         />
                                     </FormControl>
                                     <FormDescription>

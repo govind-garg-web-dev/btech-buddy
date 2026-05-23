@@ -4,7 +4,6 @@ import { Courses, Tab } from "@/config";
 import { useSubjectView } from "@/hooks/use-subject-view";
 import { cn } from "@/lib/utils";
 import { Expand } from "lucide-react";
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import StudyMaterial from "./StudyMaterial";
 import Syllabus from "./Syllabus";
@@ -13,23 +12,18 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
-import { SubjectDetail } from "@/lib/server";
+import type { Subject } from "@/lib/supabase/queries";
 
 interface SubjectViewProps {
     course: Courses;
-    subjectDetail: SubjectDetail;
+    subjectDetail: Subject;
     isModal?: boolean;
 }
 
 const SubjectView = ({ course, isModal, subjectDetail }: SubjectViewProps) => {
-    const params = useParams<{ slug: string[] }>();
     const [tab, setTab] = useState<Tab>(Tab.THEORY);
 
     const subjectViewModal = useSubjectView();
-
-    const semester = params.slug[0];
-    const branch = params.slug[1];
-    const subject = params.slug[2];
 
     const switchTab = (value: Tab) => {
         setTab(value);
@@ -47,7 +41,7 @@ const SubjectView = ({ course, isModal, subjectDetail }: SubjectViewProps) => {
                         "md:py-3": !subjectViewModal.isOpen,
                     })}
                 >
-                    <CardTitle>{subjectDetail.subject}</CardTitle>
+                    <CardTitle>{subjectDetail.name}</CardTitle>
                     {!subjectViewModal.isOpen && (
                         <AccessibleToolTip label="Modal view">
                             <Button
@@ -75,21 +69,10 @@ const SubjectView = ({ course, isModal, subjectDetail }: SubjectViewProps) => {
                                 <SubjectView.Box
                                     sub={subjectDetail}
                                     tab={tab}
-                                    branch={branch}
-                                    course={course}
-                                    semester={semester}
-                                    subject={subject}
                                 />
                             </ScrollArea>
                         ) : (
-                            <SubjectView.Box
-                                sub={subjectDetail}
-                                tab={tab}
-                                branch={branch}
-                                course={course}
-                                semester={semester}
-                                subject={subject}
-                            />
+                            <SubjectView.Box sub={subjectDetail} tab={tab} />
                         )}
                     </Tabs>
                 </CardContent>
@@ -122,57 +105,44 @@ SubjectView.Tabs = function SubjectViewTabs() {
 SubjectView.Box = function SubjectViewBox({
     sub,
     tab,
-    branch,
-    course,
-    semester,
-    subject,
 }: {
-    sub: SubjectDetail;
+    sub: Subject;
     tab: Tab;
-    course: Courses;
-    semester: string | null;
-    branch: string | null;
-    subject: string | null;
 }) {
     return (
         <>
             <Syllabus
-                theory={sub.theory || sub.units || []}
-                lab={sub.lab || []}
+                theory={sub.theory_units || []}
+                lab={sub.lab_units || []}
                 tab={tab}
             />
             {tab === Tab.NOTES ||
             tab === Tab.BOOKS ||
             tab === Tab.PYQ ||
             tab === Tab.FILES ? (
-                <StudyMaterial
-                    tab={tab}
-                    note={sub.camel ?? ""}
-                    pyq={sub.pYq ?? ""}
-                    book={sub.book ?? ""}
-                    practical={sub.practical ?? ""}
-                    course={course}
-                    semester={semester}
-                    branch={branch}
-                    subject={subject}
-                />
+                <StudyMaterial tab={tab} subjectId={sub.id} />
             ) : null}
         </>
     );
 };
 
-SubjectView.Details = function SubjectViewDetails({
-    sub,
-}: {
-    sub: SubjectDetail;
-}) {
-    function DetailItem({ label, value }: { label: string; value: string }) {
+SubjectView.Details = function SubjectViewDetails({ sub }: { sub: Subject }) {
+    function DetailItem({
+        label,
+        value,
+    }: {
+        label: string;
+        value: string;
+    }) {
         return (
             <div className="flex flex-wrap items-center justify-between rounded-md bg-background p-2">
                 <p className="font-semibold">{label}</p>
                 <p>
                     {typeof value === "string" && value.includes("/")
-                        ? value.split("/").map((s) => s.trim()).join(" / ")
+                        ? value
+                              .split("/")
+                              .map((s) => s.trim())
+                              .join(" / ")
                         : value}
                 </p>
             </div>
@@ -180,33 +150,36 @@ SubjectView.Details = function SubjectViewDetails({
     }
 
     return (
-        <CardContent className="">
+        <CardContent>
             <div className="flex flex-col gap-1.5 rounded-md bg-accent p-1 shadow-md">
-                {sub.theorypapercode ? (
+                {sub.theory_paper_code ? (
                     <DetailItem
                         label="Theory Code"
-                        value={sub.theorypapercode}
+                        value={sub.theory_paper_code}
                     />
                 ) : null}
-                {sub.theorycredits ? (
+                {sub.theory_credits ? (
                     <DetailItem
                         label="Theory Credits"
-                        value={sub.theorycredits.toString()}
+                        value={sub.theory_credits.toString()}
                     />
                 ) : null}
-                {sub.labpapercode ? (
-                    <DetailItem label="Lab Code" value={sub.labpapercode} />
+                {sub.lab_paper_code ? (
+                    <DetailItem
+                        label="Lab Code"
+                        value={sub.lab_paper_code}
+                    />
                 ) : null}
-                {sub.labcredits ? (
+                {sub.lab_credits ? (
                     <DetailItem
                         label="Lab Credits"
-                        value={sub.labcredits.toString()}
+                        value={sub.lab_credits.toString()}
                     />
                 ) : null}
-                {sub.coursecategory ? (
+                {sub.course_category ? (
                     <DetailItem
                         label="Course Category"
-                        value={sub.coursecategory}
+                        value={sub.course_category}
                     />
                 ) : null}
             </div>

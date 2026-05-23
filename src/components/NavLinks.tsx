@@ -1,10 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Calendar, Github, Instagram, Menu, Search, Star } from "lucide-react";
+import { Github, Instagram, Menu, Search, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
-import ConfigureAI from "./ai/ConfigureAI";
 import ThemeCustomizer from "./theme/theme-customizer";
 import AccessibleToolTip from "./ui/accessible-tooltip";
 import { Button, buttonVariants } from "./ui/button";
@@ -17,7 +16,6 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "./ui/sheet";
-import { useDatesheet } from "@/hooks/use-datesheet";
 import { useSearch } from "@/hooks/use-search";
 import { CommandShortcut } from "./ui/command";
 
@@ -30,7 +28,6 @@ const kbdKey = () => {
 };
 
 const NavLinks = () => {
-    const { onOpen } = useDatesheet();
     const search = useSearch();
 
     return (
@@ -47,7 +44,7 @@ const NavLinks = () => {
                         <CommandShortcut>{kbdKey()} K</CommandShortcut>
                     </Button>
                 </AccessibleToolTip>
-                <AccessibleToolTip label="Github">
+                <AccessibleToolTip label="Star on GitHub">
                     <a
                         className={cn(
                             buttonVariants({
@@ -55,7 +52,7 @@ const NavLinks = () => {
                                 size: "icon",
                             })
                         )}
-                        href="https://github.com/akshat-OwO/syllabusx-client"
+                        href="https://github.com/govind-garg-web-dev/btech-buddy"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
@@ -67,14 +64,13 @@ const NavLinks = () => {
                         className={cn(
                             buttonVariants({ variant: "ghost", size: "icon" })
                         )}
-                        href="https://www.instagram.com/syllabusx_.live/"
+                        href="https://www.instagram.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
                         <Instagram className="h-4 w-4" />
                     </a>
                 </AccessibleToolTip>
-                <ConfigureAI />
                 <ThemeCustomizer />
             </div>
             <div className="flex gap-2 md:hidden">
@@ -85,11 +81,6 @@ const NavLinks = () => {
                 >
                     <Search className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => onOpen()}>
-                    <Calendar className="h-4 w-4" />
-                </Button>
-                <ConfigureAI.MobileTrigger />
-                <ConfigureAI />
                 <ThemeCustomizer />
                 <Sheet>
                     <SheetTrigger asChild>
@@ -104,45 +95,34 @@ const NavLinks = () => {
                         <ScrollArea className="h-full pb-10">
                             <ul className="mt-5 grid gap-5">
                                 <ListAnchor title="Courses" href="/courses">
-                                    Swipe through the academic menu, and let the
-                                    learning feast begin!
+                                    Browse all B.Tech and BCA courses.
                                 </ListAnchor>
                                 <ListAnchor
-                                    title="Change Log"
+                                    title="Changelog"
                                     href="/changelog"
                                 >
-                                    Witness the magic behind SyllabusX&apos;s
-                                    updates. Stay nerdy, stay updated!
+                                    See what&apos;s new on BtechBuddy.
                                 </ListAnchor>
                                 <ListAnchor title="About Us" href="/about-us">
-                                    Because at SyllabusX, it&apos;s not just
-                                    about the code; it&apos;s about the people
-                                    who make it happen.
+                                    Meet the team behind BtechBuddy.
                                 </ListAnchor>
                                 <ListAnchor
                                     title="Contact Us"
                                     href="/contact-us"
                                 >
-                                    Navigate to our Contact Us page and shoot a
-                                    signal our way!
+                                    Reach out to us for feedback or support.
                                 </ListAnchor>
                                 <ListAnchor
                                     title="Terms & Conditions"
                                     href="/t&c"
                                 >
-                                    These guidelines outline the rules of
-                                    engagement, responsibilities, and the
-                                    collaborative spirit that fuels our
-                                    open-source initiative.
+                                    Terms of use for BtechBuddy.
                                 </ListAnchor>
                                 <ListAnchor
                                     title="Privacy Policy"
-                                    href="privacy-policy"
+                                    href="/privacy-policy"
                                 >
-                                    Our Privacy Policy is your trusty guide,
-                                    detailing how we collect, use, and protect
-                                    your information in this collaborative,
-                                    open-source space.
+                                    How we handle your information.
                                 </ListAnchor>
                             </ul>
                             <div className="mt-5 flex items-center justify-center gap-2">
@@ -154,14 +134,14 @@ const NavLinks = () => {
                                                 size: "icon",
                                             })
                                         )}
-                                        href="https://www.instagram.com/syllabusx_.live/"
+                                        href="https://www.instagram.com/"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
                                         <Instagram className="h-4 w-4" />
                                     </a>
                                 </AccessibleToolTip>
-                                <AccessibleToolTip label="Github">
+                                <AccessibleToolTip label="GitHub">
                                     <a
                                         className={cn(
                                             buttonVariants({
@@ -169,7 +149,7 @@ const NavLinks = () => {
                                                 size: "icon",
                                             })
                                         )}
-                                        href="https://github.com/akshat-OwO/syllabusx-client"
+                                        href="https://github.com/govind-garg-web-dev/btech-buddy"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >

@@ -4,7 +4,7 @@ import { useSubjectView } from "@/hooks/use-subject-view";
 import { FC } from "react";
 import SubjectView from "../SubjectView";
 import { Dialog, DialogContent } from "../ui/dialog";
-import { SubjectDetail } from "@/lib/server";
+import type { Subject as SubjectDetail } from "@/lib/supabase/queries";
 
 interface SubjectViewModalProps {
     subjectDetail: SubjectDetail;

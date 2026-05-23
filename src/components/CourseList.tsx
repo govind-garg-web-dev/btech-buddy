@@ -1,16 +1,9 @@
 import LayoutWrapper from "@/layouts/LayoutWrapper";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
-import { FC } from "react";
 import { buttonVariants } from "./ui/button";
 
-interface CourseListProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    content: any;
-}
-
-const CourseList: FC<CourseListProps> = ({ content }) => {
+const CourseList = () => {
     return (
         <LayoutWrapper className="overflow-hidden py-20">
             <div className="flex flex-col gap-10 lg:flex-row lg:justify-between">
@@ -18,32 +11,6 @@ const CourseList: FC<CourseListProps> = ({ content }) => {
                     <div className="prose prose-neutral dark:prose-invert">
                         <h2>Unleash Your Academic Odyssey</h2>
                         <p>Charting a course for every IPU program.</p>
-                    </div>
-                    <div className="relative hidden aspect-square h-72 rounded-md dark:md:block">
-                        <Image
-                            src={
-                                content
-                                    ? "https:" +
-                                      content.unleashOdyssey.fields.file.url
-                                    : "/placeholder-square.png"
-                            }
-                            alt="Unleash Odyssey"
-                            fill
-                            className="rounded-md"
-                        />
-                    </div>
-                    <div className="relative hidden aspect-square h-72 rounded-md dark:hidden md:block">
-                        <Image
-                            src={
-                                content
-                                    ? "https:" +
-                                      content.unleashOdyssey.fields.file.url
-                                    : "/placeholder-square-light.png"
-                            }
-                            alt="Unleash Odyssey"
-                            fill
-                            className="rounded-md"
-                        />
                     </div>
                 </div>
                 <div className="grid h-48 w-full grid-cols-2 gap-2 lg:h-auto lg:w-1/2">

@@ -2,8 +2,6 @@ import _ from "lodash";
 import { clsx, type ClassValue } from "clsx";
 import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
-import { compress, compressToEncodedURIComponent } from "lz-string";
-import { TMockSchema } from "./schemas";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -11,19 +9,19 @@ export function cn(...inputs: ClassValue[]) {
 
 export function constructMetadata(): Metadata {
     return {
-        metadataBase: new URL("https://syllabusx.live"),
+        metadataBase: new URL("https://btechbuddy.live"),
         manifest: "../manifest.json",
 
         title: {
-            default: "SyllabusX",
-            template: "SyllabusX | %s",
+            default: "BtechBuddy",
+            template: "BtechBuddy | %s",
         },
         description:
-            "Embark on a streamlined academic journey with SyllabusX – the ultimate hub for GGSIPU syllabi and study materials.",
-        applicationName: "SyllabusX",
+            "Your complete academic companion for B.Tech at GGSIPU. Access syllabi, notes, PYQs, and study materials effortlessly.",
+        applicationName: "BtechBuddy",
         keywords: [
-            "SyllabusX",
-            "syllabus x",
+            "BtechBuddy",
+            "btech buddy",
             "Syllabus",
             "IPU Syllabus",
             "IPU",
@@ -31,24 +29,24 @@ export function constructMetadata(): Metadata {
             "BCA",
             "Notes",
             "PYQs",
-            "Akash",
+            "GGSIPU",
             "Practicals IPU",
         ],
         openGraph: {
-            title: "SyllabusX",
+            title: "BtechBuddy",
             description:
-                "Embark on a streamlined academic journey with SyllabusX – the ultimate hub for GGSIPU syllabi and study materials.",
-            url: "https://syllabusx.live",
-            siteName: "SyllabusX",
+                "Your complete academic companion for B.Tech at GGSIPU. Access syllabi, notes, PYQs, and study materials effortlessly.",
+            url: "https://btechbuddy.live",
+            siteName: "BtechBuddy",
             locale: "en_US",
             type: "website",
         },
         twitter: {
-            title: "SyllabusX",
+            title: "BtechBuddy",
             description:
-                "Embark on a streamlined academic journey with SyllabusX – the ultimate hub for GGSIPU syllabi and study materials.",
+                "Your complete academic companion for B.Tech at GGSIPU. Access syllabi, notes, PYQs, and study materials effortlessly.",
             card: "summary_large_image",
-            site: "https://syllabusx.live",
+            site: "https://btechbuddy.live",
         },
     };
 }
@@ -79,11 +77,4 @@ export function getRemainingTime(futureTimestamp: number): string {
         .value();
 
     return result;
-}
-
-export function generatePDFUrl(data: TMockSchema, baseUrl: string): string {
-    const compressedData = compressToEncodedURIComponent(
-        compress(JSON.stringify(data))
-    );
-    return `${baseUrl}/api/generate-pdf?data=${compressedData}`;
 }

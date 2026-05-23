@@ -3,43 +3,43 @@ import { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
     return [
         {
-            url: "https://syllabusx.live",
+            url: "https://btechbuddy.live",
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 1,
         },
         {
-            url: "https://syllabusx.live/courses",
+            url: "https://btechbuddy.live/courses",
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 0.8,
         },
         {
-            url: "https://syllabusx.live/about-us",
+            url: "https://btechbuddy.live/about-us",
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 0.6,
         },
         {
-            url: "https://syllabusx.live/contact-us",
+            url: "https://btechbuddy.live/contact-us",
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 0.6,
         },
         {
-            url: "https://syllabusx.live/changelog",
+            url: "https://btechbuddy.live/changelog",
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 0.4,
         },
         {
-            url: "https://syllabusx.live/privacy-policy",
+            url: "https://btechbuddy.live/privacy-policy",
             lastModified: new Date(),
             changeFrequency: "yearly",
             priority: 0.2,
         },
         {
-            url: "https://syllabusx.live/t&c",
+            url: "https://btechbuddy.live/t&c",
             lastModified: new Date(),
             changeFrequency: "yearly",
             priority: 0.2,

@@ -1,3 +1,2 @@
-import { Octokit } from "octokit";
-
-export const octokit = new Octokit({});
+// Octokit removed
+export const octokit = null;

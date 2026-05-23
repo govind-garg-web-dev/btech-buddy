@@ -1,26 +1,32 @@
 import LayoutWrapper from "@/layouts/LayoutWrapper";
-import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { FC } from "react";
 
-interface LetterProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    content: any;
-}
-
-const Letter: FC<LetterProps> = ({ content }) => {
+const Letter = () => {
     return (
         <LayoutWrapper className="py-20">
             <div className="flex flex-col justify-center gap-10">
                 <div className="prose prose-neutral self-center dark:prose-invert">
-                    <h3 className="text-center">
-                        {content ? content.contentTitle : null}
-                    </h3>
+                    <h3 className="text-center">A Note from BtechBuddy</h3>
                 </div>
-                {content ? (
-                    <div className="prose prose-neutral mx-auto rounded-md bg-accent p-3.5 dark:prose-invert">
-                        {documentToReactComponents(content.letter)}
-                    </div>
-                ) : null}
+                <div className="prose prose-neutral mx-auto rounded-md bg-accent p-3.5 dark:prose-invert">
+                    <p>
+                        Hey there, fellow engineer! We know how overwhelming
+                        B.Tech can get — scattered notes, missing syllabi,
+                        last-minute PYQ hunting. We built BtechBuddy to fix
+                        all of that.
+                    </p>
+                    <p>
+                        Everything you need — syllabus, handwritten notes,
+                        previous year questions, and practical files — is right
+                        here, organized by semester and branch, ready when you
+                        need it.
+                    </p>
+                    <p>
+                        Study smarter. Stress less. You&apos;ve got this.
+                    </p>
+                    <p>
+                        <strong>— The BtechBuddy Team</strong>
+                    </p>
+                </div>
             </div>
         </LayoutWrapper>
     );

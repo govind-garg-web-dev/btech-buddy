@@ -10,12 +10,12 @@ const Pricing = () => {
                 <div className="prose prose-neutral self-center text-center dark:prose-invert">
                     <h2 className="mb-2 text-3xl font-bold">Pricing</h2>
                     <p className="text-muted-foreground">
-                        No wallet required! SyllabusX is free and open-source
+                        No wallet required! BtechBuddy is completely free.
                     </p>
                 </div>
                 <div className="flex flex-col gap-4">
                     <a
-                        href="https://github.com/akshat-OwO/syllabusx-client"
+                        href="https://github.com/govind-garg-web-dev/btech-buddy"
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(
@@ -27,10 +27,10 @@ const Pricing = () => {
                         )}
                     >
                         <Star className="h-5 w-5 fill-highlight text-highlight" />
-                        Give us a star
+                        Star us on GitHub
                     </a>
                     <a
-                        href="https://www.instagram.com/syllabusx_.live/"
+                        href="https://www.instagram.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className={cn(
@@ -45,9 +45,7 @@ const Pricing = () => {
                         Follow us on Instagram
                     </a>
                     <a
-                        href="https://forms.gle/BFTv1uy8L33ptic6A"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="mailto:govindgarg.ne@gmail.com"
                         className={cn(
                             buttonVariants({
                                 variant: "outline",
@@ -61,17 +59,19 @@ const Pricing = () => {
                     </a>
                     <div className="mt-2 flex flex-col items-center gap-4 rounded-lg border border-secondary p-6">
                         <Gift className="h-20 w-20 stroke-1 text-highlight" />
+                        <p className="text-center text-sm text-muted-foreground">
+                            Contribute notes & study materials to help your
+                            fellow students!
+                        </p>
                         <a
-                            href="https://github.com/sponsors/akshat-OwO"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href="mailto:govindgarg.ne@gmail.com"
                             className={cn(
                                 buttonVariants({
                                     className: "h-10 w-full items-center gap-2",
                                 })
                             )}
                         >
-                            Become a sponsor
+                            Contribute Materials
                         </a>
                     </div>
                 </div>

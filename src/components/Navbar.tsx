@@ -1,6 +1,5 @@
 import LayoutWrapper from "@/layouts/LayoutWrapper";
 import Link from "next/link";
-import { Icons } from "./Icons";
 import NavLinks from "./NavLinks";
 import NavMenu from "./NavMenu";
 
@@ -13,17 +12,14 @@ const Navbar = () => {
                         <Link
                             href="/"
                             aria-label="home page"
-                            className="z-40 flex items-center gap-x-1.5 font-semibold"
+                            className="z-40 flex items-center gap-x-2 font-semibold"
                         >
-                            <>
-                                <Icons.x
-                                    aria-label="syllabus x"
-                                    className="w-6"
-                                />{" "}
-                                <p className="text-lg text-neutral-900 transition hover:opacity-75 dark:text-neutral-50">
-                                    SyllabusX
-                                </p>
-                            </>
+                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs font-black">
+                                BB
+                            </div>
+                            <p className="text-lg text-neutral-900 transition hover:opacity-75 dark:text-neutral-50">
+                                BtechBuddy
+                            </p>
                         </Link>
                         <div className="hidden lg:flex">
                             <NavMenu />

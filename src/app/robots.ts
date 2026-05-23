@@ -16,6 +16,6 @@ export default function robots(): MetadataRoute.Robots {
                 userAgent: "Adsbot-Google",
             },
         ],
-        sitemap: "https://syllabusx-git-dev-akshatowo.vercel.app/sitemap.xml",
+        sitemap: "https://btechbuddy.live/sitemap.xml",
     };
 }
