@@ -81,7 +81,7 @@ function Customizer({ closeTriggerHidden = false }: CustomizerProps) {
             <div className="flex items-start justify-between pt-6 md:pt-0">
                 <div className="space-y-1">
                     <div className="font-semibold leading-none tracking-tight">
-                        Customize SyllabusX
+                        Customize BtechBuddy
                     </div>
                     <div className="text-xs text-muted-foreground">
                         Tweak it, twist it, make it funky!

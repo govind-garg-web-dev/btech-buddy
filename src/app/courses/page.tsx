@@ -7,22 +7,22 @@ import Link from "next/link";
 export const metadata: Metadata = {
     title: "Courses",
     description:
-        "Unleash your academic odyssey with SyllabusX's Courses page, charting a course for every program at Guru Gobind Singh Indraprastha University (GGSIPU). Explore detailed syllabi and study materials for B.Tech, USICT B.Tech, BCA, and stay tuned for more exciting programs on the horizon. Your academic journey begins here.",
+        "Browse all B.Tech and BCA courses at GGSIPU on BtechBuddy – your complete hub for syllabi, notes, PYQs, and lab files.",
     openGraph: {
-        title: "SyllabusX | Courses",
+        title: "BtechBuddy | Courses",
         description:
-            "Unleash your academic odyssey with SyllabusX's Courses page, charting a course for every program at Guru Gobind Singh Indraprastha University (GGSIPU). Explore detailed syllabi and study materials for B.Tech, USICT B.Tech, BCA, and stay tuned for more exciting programs on the horizon. Your academic journey begins here.",
-        url: "https://syllabusx.live",
-        siteName: "SyllabusX",
+            "Browse all B.Tech and BCA courses at GGSIPU on BtechBuddy – your complete hub for syllabi, notes, PYQs, and lab files.",
+        url: "https://btechbuddy.live/courses",
+        siteName: "BtechBuddy",
         locale: "en_US",
         type: "website",
     },
     twitter: {
-        title: "SyllabusX | Courses",
+        title: "BtechBuddy | Courses",
         description:
-            "Unleash your academic odyssey with SyllabusX's Courses page, charting a course for every program at Guru Gobind Singh Indraprastha University (GGSIPU). Explore detailed syllabi and study materials for B.Tech, USICT B.Tech, BCA, and stay tuned for more exciting programs on the horizon. Your academic journey begins here.",
+            "Browse all B.Tech and BCA courses at GGSIPU on BtechBuddy – your complete hub for syllabi, notes, PYQs, and lab files.",
         card: "summary_large_image",
-        site: "https://syllabusx.live",
+        site: "https://btechbuddy.live/courses",
     },
 };
 

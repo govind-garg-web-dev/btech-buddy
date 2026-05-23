@@ -8,22 +8,22 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Contact Us",
     description:
-        "Let's connect! Have questions, suggestions, or just want to say hello? Navigate to our Contact Us page – the portal to connect with the SyllabusX team. Your feedback fuels our commitment to simplifying student life. Give us your insights, and let's shape the future of academic navigation together.",
+        "Have questions, suggestions, or just want to say hello? Reach out to the BtechBuddy team. Your feedback helps us improve and serve GGSIPU students better.",
     openGraph: {
-        title: "SyllabusX | Contact Us",
+        title: "BtechBuddy | Contact Us",
         description:
-            "Let's connect! Have questions, suggestions, or just want to say hello? Navigate to our Contact Us page – the portal to connect with the SyllabusX team. Your feedback fuels our commitment to simplifying student life. Give us your insights, and let's shape the future of academic navigation together.",
-        url: "https://syllabusx.live",
-        siteName: "SyllabusX",
+            "Have questions, suggestions, or just want to say hello? Reach out to the BtechBuddy team.",
+        url: "https://btechbuddy.live/contact-us",
+        siteName: "BtechBuddy",
         locale: "en_US",
         type: "website",
     },
     twitter: {
-        title: "SyllabusX | Contact Us",
+        title: "BtechBuddy | Contact Us",
         description:
-            "Let's connect! Have questions, suggestions, or just want to say hello? Navigate to our Contact Us page – the portal to connect with the SyllabusX team. Your feedback fuels our commitment to simplifying student life. Give us your insights, and let's shape the future of academic navigation together.",
+            "Have questions, suggestions, or just want to say hello? Reach out to the BtechBuddy team.",
         card: "summary_large_image",
-        site: "https://syllabusx.live",
+        site: "https://btechbuddy.live/contact-us",
     },
 };
 
@@ -34,21 +34,21 @@ const Page = () => {
                 <div className="prose prose-sm prose-neutral dark:prose-invert md:prose-base">
                     <h1 className="text-center">
                         Let&apos;s Connect: Reach Out to{" "}
-                        <span className="text-highlight">SyllabusX</span>
+                        <span className="text-highlight">BtechBuddy</span>
                     </h1>
                 </div>
                 <div className="prose prose-sm prose-neutral dark:prose-invert">
                     <p className="text-center">
                         Have a question, suggestion, or just want to say hello?
                         Our Contact Us page is the portal to connect with the
-                        SyllabusX team.
+                        BtechBuddy team.
                     </p>
                 </div>
             </div>
             <div className="grid items-center gap-5 py-10 md:grid-cols-3 md:justify-center">
                 <FeedbackFormTrigger />
                 <a
-                    href="https://www.instagram.com/syllabusx_.live/"
+                    href="https://www.instagram.com/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(buttonVariants({ className: "gap-2" }))}
@@ -56,7 +56,7 @@ const Page = () => {
                     DM on Instagram <Instagram className="h-4 w-4" />
                 </a>
                 <a
-                    href="mailto:iboard990@gmail.com"
+                    href="mailto:govindgarg.ne@gmail.com"
                     target="_blank"
                     className={cn(buttonVariants({ className: "gap-2" }))}
                 >

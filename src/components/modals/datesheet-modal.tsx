@@ -111,7 +111,7 @@ DatesheetModal.ContentHeader = function DatesheetModalContentHeader({
                     Datesheet
                 </div>
                 <div className="text-xs text-muted-foreground">
-                    Track your exams within SyllabusX!
+                    Track your exams within BtechBuddy!
                 </div>
             </div>
             <div className="flex items-center gap-2">

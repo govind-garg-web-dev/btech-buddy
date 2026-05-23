@@ -7,25 +7,25 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
     title: {
         default: "Btech",
-        template: "SyllabusX | Btech | %s",
+        template: "BtechBuddy | Btech | %s",
     },
     description:
-        "Browse subjects for BTech courses at GGSIPU on SyllabusX – the ultimate hub for syllabi and study materials",
+        "Browse subjects for BTech courses at GGSIPU on BtechBuddy – your complete hub for syllabi and study materials",
     openGraph: {
-        title: "SyllabusX | Btech",
+        title: "BtechBuddy | Btech",
         description:
-            "Browse subjects for BTech courses at GGSIPU on SyllabusX – the ultimate hub for syllabi and study materials",
-        url: "https://syllabusx.live/courses/btech",
-        siteName: "SyllabusX",
+            "Browse subjects for BTech courses at GGSIPU on BtechBuddy – your complete hub for syllabi and study materials",
+        url: "https://btechbuddy.live/courses/btech",
+        siteName: "BtechBuddy",
         locale: "en_US",
         type: "website",
     },
     twitter: {
-        title: "SyllabusX | Btech",
+        title: "BtechBuddy | Btech",
         description:
-            "Browse subjects for BTech courses at GGSIPU on SyllabusX – the ultimate hub for syllabi and study materials",
+            "Browse subjects for BTech courses at GGSIPU on BtechBuddy – your complete hub for syllabi and study materials",
         card: "summary_large_image",
-        site: "https://syllabusx.live/courses/btech",
+        site: "https://btechbuddy.live/courses/btech",
     },
 };
 
