@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import { createClient } from "@supabase/supabase-js";
+import { createHash } from "crypto";
 
 const GGSIPU_BASE = "https://examweb.ggsipu.ac.in";
 
@@ -216,6 +217,17 @@ function parseResultHtml(html: string): ResultData {
     return { name, enrollment, programme, semesters };
 }
 
+/**
+ * Replicates the browser's hashPassword() from crypt.js:
+ *   passwd = btoa(SHA256(rawPassword + captchaText))
+ * The captcha text is used as the salt.
+ */
+function hashPassword(rawPassword: string, captchaText: string): string {
+    return createHash("sha256")
+        .update(rawPassword + captchaText, "utf8")
+        .digest("base64");
+}
+
 /** Append ;jsessionid=<id> to a URL path before any query string */
 function withSessionPath(url: string, sessionId: string): string {
     if (url.includes(";jsessionid=")) return url;
@@ -329,10 +341,14 @@ export async function POST(req: NextRequest) {
         // sticky routing so every request lands on the node that owns the session.
         loginUrl = withSessionPath(loginUrl, sessionId);
 
+        // The GGSIPU login form hashes the password client-side (crypt.js):
+        //   passwd = btoa(SHA256(rawPassword + captchaText))
+        const hashedPassword = hashPassword(password, captchaText.trim());
+
         const formParams: Record<string, string> = {
             ...inputFields,
             username: enrollment.trim(),
-            passwd: password,
+            passwd: hashedPassword,
             captcha: captchaText.trim(),
         };
 
